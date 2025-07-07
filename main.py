@@ -202,7 +202,18 @@ async def main():
         confirm_register_button.click()
         print("\nClicked 'Register' [Term 2]")
 
-        print("\nCourse registration successful. Close Chrome and the terminal to exit.")
+        # Check if Term 2 registration is complete
+        try:
+            WebDriverWait(driver1, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Successful Registrations')]"))
+            )
+            print("\nCourse registration successful. Close Chrome and the terminal to exit.")
+
+        except Exception as e:
+            input("\nError finding 'Successful Registrations' [Term 2]. Press `Enter` to exit.\n", e)
+            driver1.quit()
+            driver2.quit()
+            sys.exit()
 
     except Exception as e:
         input("\nERROR FINDING/CLICKING REGISTRATION BUTTONS [Term 2]. Press `Enter` to exit.\n", e)
