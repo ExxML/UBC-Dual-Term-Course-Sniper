@@ -128,8 +128,8 @@ async def main():
     second = 0
     microsecond = 0
     ### MODIFY TO MATCH YOUR COURSE REGISTRATION TIME IN PST (24-hour time) ###
-    hour = 1
-    minute = 1
+    hour = #
+    minute = #
 
     reg_time = time(hour, minute)
     form_reg_time = reg_time.strftime("%I:%M %p").lstrip("0").lower()  # Formatted as 12-hour time
@@ -138,7 +138,7 @@ async def main():
         None,
         functools.partial(
             input,
-            f"Welcome to UBC Course Sniper!\nInstructions:\n 1. ⭐ENSURE YOUR COURSE REGISTRATION TIME (PST) IS SET CORRECTLY!⭐\n"
+            f"Welcome to UBC Dual-Term Course Sniper!\nInstructions:\n 1. ⭐ENSURE YOUR COURSE REGISTRATION TIME (PST) IS SET CORRECTLY!⭐\n"
             f"    You have set your course registration time to {form_reg_time} PST.\n"
             f" 2. Manually log in to UBC Workday with your CWL in both windows.\n"
             f" 3. Open two Saved Schedules IN THE CORRESPONDING \"TERM\" WINDOWS (see top-right of page).\n"
@@ -154,12 +154,14 @@ async def main():
         print(f"\nIt is past {form_reg_time}.")
     else:
         wait_seconds = (target_time - now).total_seconds()
-        Timer(wait_seconds - 15.000, driver1.refresh).start()  # Preemptive refresh for caching
+        initial_refresh_seconds = wait_seconds - 15.000
+        Timer(initial_refresh_seconds, driver1.refresh).start()  # Preemptive refreshes for page caching
+        Timer(initial_refresh_seconds, driver2.refresh).start()
         print(f"\nWaiting {wait_seconds:.3f} seconds until {form_reg_time}.\nThe page will refresh 15 seconds before the target time.\nDO NOT TOUCH YOUR COMPUTER except to ensure that it does not fall asleep.")
         await asyncio.sleep(wait_seconds)
 
-    # Refresh the page at the target time
-    print("\nTarget time reached. Refreshing the page...")
+    # Refresh Term 1 page at the target time
+    print("\nTarget time reached. Refreshing Term 1 page...")
     driver1.refresh()
 
     # Register Term 1
@@ -173,12 +175,40 @@ async def main():
         print("\nClicked 'Register' [Term 1]")
 
     except Exception as e:
-        print("\nERROR FINDING/CLICKING REGISTRATION BUTTON(S) [Term 1]. Close Chrome and the terminal to exit.\n", e)
+        input("\nERROR FINDING/CLICKING REGISTRATION BUTTONS [Term 1]. Press `Enter` to exit.\n", e)
+        driver1.quit()
+        driver2.quit()
+        sys.exit()
 
+    # Wait for Term 1 registration to complete
+    try:
+        WebDriverWait(driver1, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Successful Registrations')]"))
+        )
+    except Exception as e:
+        input("\nError finding 'Successful Registrations' [Term 1]. Press `Enter` to proceed with Term 2 registration.")
 
+    # Refresh Term 2 page immediately after
+    print("\nRefreshing Term 2 page...")
+    driver2.refresh()
 
+    # Register Term 2
+    try:
+        register_button = WebDriverWait(driver2, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Start Registration')]")))
+        register_button.click()
+        print("\nClicked 'Start Registration' [Term 2]")
 
-    print("\nCourse registration successful. Close Chrome and the terminal to exit.")
+        confirm_register_button = WebDriverWait(driver2, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Register')]")))
+        confirm_register_button.click()
+        print("\nClicked 'Register' [Term 2]")
+
+        print("\nCourse registration successful. Close Chrome and the terminal to exit.")
+
+    except Exception as e:
+        input("\nERROR FINDING/CLICKING REGISTRATION BUTTONS [Term 2]. Press `Enter` to exit.\n", e)
+        driver1.quit()
+        driver2.quit()
+        sys.exit()
 
     await asyncio.sleep(999999) # Keep Chrome open (for ~11 days)
 
