@@ -184,7 +184,7 @@ async def main():
         input("\nERROR FINDING/CLICKING REGISTRATION BUTTONS [Term 1]. Press `Enter` to proceed with Term 2 registration.")
 
     # Refresh Term 2 page immediately after
-    print("\nTerm 1 successfully registered. Refreshing Term 2 page...")
+    print("\nTerm 1 registered. Refreshing Term 2 page...")
     driver2.refresh()
 
     # Register Term 2
