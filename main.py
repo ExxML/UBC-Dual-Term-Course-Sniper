@@ -199,9 +199,7 @@ async def main():
 
         # Check if Term 2 registration is complete
         try:
-            WebDriverWait(driver1, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Successful Registrations')]"))
-            )
+            WebDriverWait(driver2, 10).until(EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Successful Registrations')]")))
             print("\nCourse registration successful. Close Chrome and the terminal to exit.")
 
         except Exception:
