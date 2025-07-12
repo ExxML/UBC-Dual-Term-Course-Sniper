@@ -29,3 +29,10 @@ pip install -r requirements.txt
 ![alt text](SavedSchedulePreview.png)
 5. Once you are on this page, press `Enter` in the terminal to start the script.
 6. The script will wait until the target time to refresh the page and automatically click the registration buttons (first on the Term 1 window, then Term 2).
+
+## General Course Registration Tips
+
+1. You can simultaneously be on multiple waitlists for different sections of the same course.
+2. For courses without labs/tutorials, you can be registered in one course section and be waitlisted for another section of the same course.
+3. If a course is full when the Saved Schedule is registered, all the other courses will be successfully registered (excluding the course that is full).
+4. If you are waitlisted for a Term 1 course and this Term 1 course is a prereq for a Term 2 course, you WILL NOT be able to register for Term 2. If you are concerned that you will get waitlisted for a Term 1 prereq course, it is recommended that you take a different section (with available seats) as a “placeholder”, so you can register your Term 2 course without trouble. Then, if possible, go back and join the waitlist for the Term 1 course section you wanted.
